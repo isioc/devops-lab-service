@@ -17,7 +17,7 @@ jobs:
 
       - name: test run container
         run: |
-          docker run -p 8000:8000 lab4:latest -d 
+          docker run -d --name lab4 -p 8000:8000 lab4:latest
           sleep 10
           curl --fail http://localhost:8000 || exit 1
           docker stop lab4
