@@ -1,1 +1,35 @@
-# TODO: реализовать
+services: 
+  app:
+    build:
+      # доступ к корневой папке ака контекст сборки ..
+      context: .. 
+      dockerfile: docker/Dockerfile
+    # тома для синхронизации кода между контейнером и хостом
+    volumes:
+    # до двоеточия: путь в хосте; после - в контейнере
+      - ../app:/app
+    ports: 
+      - "8000:8000"
+    # json формат
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "9000:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9001:9090"
+    # конфиг и данные
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+
+# регистрация обозначаемых вольюмов
+volumes:
+  prometheus:
+  grafana:
